@@ -3,7 +3,7 @@ name: Windows Cygwin Test
 on:
   workflow_dispatch:
   push:
-    branch: cygwin
+    branches: cygwin
 
 jobs:
   build_wheels_windows:
@@ -15,33 +15,33 @@ jobs:
           packages: git cmake gcc-g++ gcc-fortran python39-pip python39-devel meson
 
       - name: Check git and python
-        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
         run: |
           which git
           which python
           python --version
+        shell: C:\cygwin\bin\bash.exe '{0}'
       
       - name: Pull Espresso source
-        uses: actions/checkout@v3
-        with:
-          repository: inlab-geo/espresso
-          path: ./espresso
-          fetch-depth: 0
+        run: |
+          git clone https://github.com/inlab-geo/espresso.git
+        shell: C:\cygwin\bin\bash.exe '{0}'
       
       - name: Get tags
         working-directory: espresso
         run: |
           git fetch --tags origin
           git describe
+        shell: C:\cygwin\bin\bash.exe '{0}'
       
       - name: Prepare Python environment
         working-directory: espresso
-        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
         run: |
           python -m pip install -r envs/requirements_test.txt
           python -m pip install .
+        shell: C:\cygwin\bin\bash.exe '{0}'
       
       - name: Generate package source with contributions
         working-directory: espresso
         run: |
           python espresso_machine/build_package/build.py
+        shell: C:\cygwin\bin\bash.exe '{0}'
