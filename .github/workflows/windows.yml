@@ -1,0 +1,43 @@
+name: Windows Cygwin Test
+
+on:
+  workflow_dispatch:
+  push:
+    branch: cygwin
+
+jobs:
+  build_wheels_windows:
+    runs-on: windows-latest
+    steps:
+      - name: Set up Cygwin
+        uses: egor-tensin/setup-cygwin@v4
+        with:
+          packages: git cmake gcc-g++ gcc-fortran python39-pip python39-devel meson
+
+      - name: Check git and python
+        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+        run: |
+          which git
+          which python
+          python --version
+      
+      - name: Pull Espresso source
+        uses: actions/checkout@v3
+        with:
+          name: inlab-geo/espresso
+          fetch-depth: 0
+      
+      - name: Get tags
+        run: |
+          git fetch --tags origin
+          git describe
+      
+      - name: Prepare Python environment
+        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+        run: |
+          python -m pip install -r envs/requirements_test.txt
+          python -m pip install .
+      
+      - name: Generate package source with contributions
+        run: |
+          python espresso_machine/build_package/build.py
