@@ -24,20 +24,24 @@ jobs:
       - name: Pull Espresso source
         uses: actions/checkout@v3
         with:
-          name: inlab-geo/espresso
+          repository: inlab-geo/espresso
+          path: ./espresso
           fetch-depth: 0
       
       - name: Get tags
+        working-directory: espresso
         run: |
           git fetch --tags origin
           git describe
       
       - name: Prepare Python environment
+        working-directory: espresso
         shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
         run: |
           python -m pip install -r envs/requirements_test.txt
           python -m pip install .
       
       - name: Generate package source with contributions
+        working-directory: espresso
         run: |
           python espresso_machine/build_package/build.py
