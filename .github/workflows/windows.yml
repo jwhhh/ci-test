@@ -12,7 +12,7 @@ jobs:
       - name: Set up Cygwin
         uses: egor-tensin/setup-cygwin@v4
         with:
-          packages: git cmake gcc-g++ gcc-fortran python39-pip python39-devel meson
+          packages: git cmake gcc-g++ gcc-fortran python39-pip python39-devel openblas-devel meson
 
       - name: Check git and python
         run: |
